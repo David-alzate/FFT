@@ -1,0 +1,25 @@
+venv/# Ignorar entornos virtuales
+.venv/
+venv/
+env/
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos de Jupyter / IPython
+.ipynb_checkpoints/
+
+# Configuración de VSCode / PyCharm
+.vscode/
+.idea/
+
+# Archivos temporales o del sistema
+.DS_Store
+Thumbs.db
+
+# Modelos y datos pesados
+models/*.pkl
+data/test/
