@@ -72,44 +72,6 @@ def spectrum_fft(y, sr, ax):
             )
 
 
-def spectrum_phase(y, sr, ax):
-    ax.clear()
-    n = len(y)
-    if n == 0 or sr is None or sr <= 0:
-        ax.set_title("Fase FFT")
-        ax.set_xlabel("Frecuencia [Hz]")
-        ax.set_ylabel("Fase [°]")
-        ax.text(0.5, 0.5, "Sin datos", ha="center", va="center", transform=ax.transAxes)
-        return
-
-    Y = np.fft.rfft(y)
-    freqs = np.fft.rfftfreq(n, d=1.0/sr)
-    phase = np.angle(Y)
-    phase_deg = np.degrees(phase)
-
-    pos_mask = freqs > 0
-    freqs_pos = freqs[pos_mask]
-    phase_deg = phase_deg[pos_mask]
-
-    if freqs_pos.size:
-        ax.semilogx(freqs_pos, phase_deg, color="tab:purple", linewidth=1)
-
-    low = max(freqs_pos.min(), 1.0) if freqs_pos.size else 1.0
-    high = max(sr / 2, low * 1.01)
-    ax.set_xlim(low, high)
-    ax.set_ylim(-180, 180)
-    ax.set_title("Transformada de Fourier - Fase")
-    ax.set_xlabel("Frecuencia [Hz]")
-    ax.set_ylabel("Fase [°]")
-    ax.set_yticks([-180, -90, 0, 90, 180])
-    ax.grid(True, which="both", linestyle="--", alpha=0.4)
-
-    peaks = _dominant_peaks(freqs, np.abs(Y), top_n=4)
-    for freq, _ in peaks:
-        if freq <= 0:
-            continue
-        ax.axvline(freq, color="tab:red", linestyle=":", alpha=0.3)
-
 def spectrogram(y, sr, ax, n_fft=2048, hop_length=512):
     if hasattr(ax, "_colorbar") and ax._colorbar:
         ax._colorbar.remove()

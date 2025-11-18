@@ -95,7 +95,6 @@ class InstrumentApp(tk.Tk):
         guide_msg = (
             "• Forma de onda: muestra el audio en el tiempo.\n"
             "• FFT magnitud: Transformada de Fourier; picos = frecuencias dominantes.\n"
-            "• FFT fase: indica cómo se sincronizan esas frecuencias.\n"
             "• Espectrograma: energías de la FFT ventana a ventana."
         )
         tk.Label(guide_tab, text=guide_msg, justify=tk.LEFT, anchor="nw", wraplength=220).pack(fill=tk.BOTH, expand=True, padx=6, pady=6)
@@ -111,11 +110,10 @@ class InstrumentApp(tk.Tk):
 
         # --- Figura matplotlib (4 subplots reorganizados) ---
         self.fig = Figure(figsize=(9.5, 6.5), dpi=100)
-        gs = GridSpec(3, 2, figure=self.fig, height_ratios=[1, 1, 1.3], hspace=0.35, wspace=0.25)
-        self.ax_wave = self.fig.add_subplot(gs[0, :])
+        gs = GridSpec(3, 1, figure=self.fig, height_ratios=[1, 1, 1.3], hspace=0.35)
+        self.ax_wave = self.fig.add_subplot(gs[0, 0])
         self.ax_fft = self.fig.add_subplot(gs[1, 0])
-        self.ax_phase = self.fig.add_subplot(gs[1, 1])
-        self.ax_spec = self.fig.add_subplot(gs[2, :])
+        self.ax_spec = self.fig.add_subplot(gs[2, 0])
 
         zoom_frame = tk.LabelFrame(plot_area, text="Vista ampliada (pantalla completa)")
         zoom_frame.pack(side=tk.TOP, fill=tk.X, pady=(0, 6))
@@ -123,7 +121,6 @@ class InstrumentApp(tk.Tk):
         zoom_buttons = [
             ("Forma de onda", "wave"),
             ("FFT magnitud", "fft"),
-            ("FFT fase", "phase"),
             ("Espectrograma", "spec"),
         ]
         for text, key in zoom_buttons:
@@ -240,7 +237,6 @@ class InstrumentApp(tk.Tk):
         plot_map = {
             "wave": (visualize.waveform, "Forma de onda"),
             "fft": (visualize.spectrum_fft, "Transformada de Fourier - Magnitud"),
-            "phase": (visualize.spectrum_phase, "Transformada de Fourier - Fase"),
             "spec": (visualize.spectrogram, "Espectrograma"),
         }
         func, title = plot_map.get(plot_key, (None, None))
@@ -279,7 +275,6 @@ class InstrumentApp(tk.Tk):
             return
         visualize.waveform(self.state.y, self.state.sr, self.ax_wave)
         visualize.spectrum_fft(self.state.y, self.state.sr, self.ax_fft)
-        visualize.spectrum_phase(self.state.y, self.state.sr, self.ax_phase)
         visualize.spectrogram(self.state.y, self.state.sr, self.ax_spec)
         self.fig.tight_layout(rect=(0, 0, 0.97, 1.0))
         self.canvas.draw()

@@ -79,11 +79,10 @@ La ventana se divide en dos grandes áreas:
   - *Pasos*: orden sugerido para usar la aplicación.
 
 ### Área de gráficas (derecha)
-Se compone de cuatro subgráficas:
+Se compone de tres subgráficas:
 1. Forma de onda (tiempo)
 2. Transformada de Fourier - magnitud
-3. Transformada de Fourier - fase
-4. Espectrograma (STFT)
+3. Espectrograma (STFT)
 
 Debajo de las gráficas encontrarás botones de «Vista ampliada» para cada panel. Al presionarlos se abre una ventana en pantalla completa (sal con Esc o el botón "Cerrar") para detallar mejor cada visualización.
 
@@ -104,11 +103,7 @@ A continuación se describe cada gráfica desde dos perspectivas: la matemática
 - **Cotidiana**:
   - Muestra de qué frecuencias está hecha la nota. La barra roja `p1` indica «la altura principal» del sonido; `p2` y `p3` son los armónicos que le dan color o timbre. Si se mueven, cambia la percepción del instrumento.
 
-### 3. Transformada de Fourier - fase
-- **Matemática**: grafica el ángulo de `X(f)` en grados. La fase codifica el desplazamiento temporal de cada componente sinusoidal. Aunque la magnitud determina «qué tanto» de cada frecuencia hay, la fase indica «en qué instante» se combinan para reconstruir la señal.
-- **Cotidiana**: ayuda a explicar que para recrear el audio original no basta con conocer la potencia de cada frecuencia; también hay que saber cómo se alinean en el tiempo. Cambiar la fase altera el timbre o produce cancelaciones.
-
-### 4. Espectrograma (STFT)
+### 3. Espectrograma (STFT)
 - **Matemática**: aplica la Transformada de Fourier a ventanas cortas (Short-Time Fourier Transform). Cada columna es una FFT de `x(t)` multiplicada por una ventana deslizante. Se representa en dB con `librosa.amplitude_to_db`, y se etiquetan ejes en segundos (horizontal) y Hertz (vertical). Permite analizar señales no estacionarias, como ataques, vibratos o glisandos.
 - **Cotidiana**: es «un mapa de calor» que muestra cuánta energía hay en cada frecuencia mientras la nota suena. Los colores brillantes representan partes del espectro donde el instrumento tiene más fuerza en ese instante.
 
