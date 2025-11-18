@@ -35,7 +35,14 @@ instrument_fft_gui/
 └── setup.sh
 ```
 
-> El directorio `data/` puede contener subcarpetas como `piano/`, `guitar/`, `violin/`. Cada subcarpeta reúne archivos `.wav` mono del instrumento correspondiente.
+> El directorio `data/` ya trae subcarpetas para `piano/`, `guitar/`, `violin/`, y ahora también `cello/` (chelo) y `drums/` (batería). Cada subcarpeta debe reunir los `.wav` mono del instrumento correspondiente. Dejamos archivos `sample_*.wav` de referencia para que el árbol exista en Git; puedes reemplazarlos o añadir más audios reales antes de entrenar.
+
+**Instrumentos listos para usar**
+- `data/piano/`, `data/guitar/`, `data/violin/`: ejemplos iniciales de cuerda y teclado.
+- `data/cello/`: carpeta nueva para acercar el timbre del chelo al piano. Incluye `sample_cello.wav` como marcador.
+- `data/drums/`: carpeta nueva para percusión/batería con `sample_drums.wav` de muestra.
+
+Cuando agregues tus propios audios basta con copiarlos a la carpeta del instrumento correspondiente; el entrenador y la GUI detectan automáticamente cualquier subcarpeta (excepto `test/`).
 
 ## Instalación y ejecución
 1. **Crear entorno virtual (opcional pero recomendado)**:
@@ -77,6 +84,8 @@ Se compone de cuatro subgráficas:
 2. Transformada de Fourier - magnitud
 3. Transformada de Fourier - fase
 4. Espectrograma (STFT)
+
+Debajo de las gráficas encontrarás botones de «Vista ampliada» para cada panel. Al presionarlos se abre una ventana en pantalla completa (sal con Esc o el botón "Cerrar") para detallar mejor cada visualización.
 
 Cada panel se actualiza al cargar un audio `.wav` y permite ilustrar la teoría de Fourier con ejemplos reales.
 

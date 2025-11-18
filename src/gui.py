@@ -117,8 +117,21 @@ class InstrumentApp(tk.Tk):
         self.ax_phase = self.fig.add_subplot(gs[1, 1])
         self.ax_spec = self.fig.add_subplot(gs[2, :])
 
+        zoom_frame = tk.LabelFrame(plot_area, text="Vista ampliada (pantalla completa)")
+        zoom_frame.pack(side=tk.TOP, fill=tk.X, pady=(0, 6))
+
+        zoom_buttons = [
+            ("Forma de onda", "wave"),
+            ("FFT magnitud", "fft"),
+            ("FFT fase", "phase"),
+            ("Espectrograma", "spec"),
+        ]
+        for text, key in zoom_buttons:
+            btn = tk.Button(zoom_frame, text=text, command=lambda k=key: self.open_fullscreen_plot(k))
+            btn.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=4, pady=4)
+
         self.canvas = FigureCanvasTkAgg(self.fig, master=plot_area)
-        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
         self.protocol("WM_DELETE_WINDOW", self.on_close)
 
@@ -218,6 +231,48 @@ class InstrumentApp(tk.Tk):
     def on_close(self):
         self.stop_playback()
         self.destroy()
+
+    def open_fullscreen_plot(self, plot_key: str):
+        if self.state.y is None or self.state.sr is None:
+            messagebox.showwarning("Sin audio", "Carga primero un archivo para visualizar en pantalla completa.")
+            return
+
+        plot_map = {
+            "wave": (visualize.waveform, "Forma de onda"),
+            "fft": (visualize.spectrum_fft, "Transformada de Fourier - Magnitud"),
+            "phase": (visualize.spectrum_phase, "Transformada de Fourier - Fase"),
+            "spec": (visualize.spectrogram, "Espectrograma"),
+        }
+        func, title = plot_map.get(plot_key, (None, None))
+        if func is None:
+            return
+
+        win = tk.Toplevel(self)
+        win.title(f"Vista ampliada - {title}")
+
+        try:
+            win.attributes("-fullscreen", True)
+            win.bind("<Escape>", lambda _evt: win.destroy())
+        except tk.TclError:
+            try:
+                win.state("zoomed")
+            except tk.TclError:
+                pass
+
+        info_bar = tk.Frame(win)
+        info_bar.pack(side=tk.TOP, fill=tk.X)
+        tk.Label(info_bar, text="Presiona Esc o cierra la ventana para salir de pantalla completa.").pack(side=tk.LEFT, padx=8, pady=4)
+        tk.Button(info_bar, text="Cerrar", command=win.destroy).pack(side=tk.RIGHT, padx=8, pady=4)
+
+        fig = Figure(figsize=(11, 7), dpi=100)
+        ax = fig.add_subplot(111)
+        setattr(ax, "_colorbar", None)
+        func(self.state.y, self.state.sr, ax)
+        fig.tight_layout()
+
+        canvas = FigureCanvasTkAgg(fig, master=win)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
     def update_plots(self):
         if self.state.y is None:
